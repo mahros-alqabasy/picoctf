@@ -58,7 +58,6 @@ jobs:
           Name-Email: ci@example.com
           Expire-Date: 0
           %commit
-          EOF
           gpg --batch --generate-key gpg-key.conf
           rm gpg-key.conf
           gpg --list-keys --with-colons
