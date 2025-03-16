@@ -24,7 +24,28 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y shc dpkg-dev debsigs lintian gpg
 
-      # 3. Generate an ephemeral GPG key for signing
+      # 3. Dynamically Set Version and Tag
+      - name: Set Dynamic Release Version and Tag
+        id: version
+        run: |
+          # Extract version from a VERSION file or default to 0.0.1 if not available
+          if [[ -f version.txt ]]; then
+            VERSION=$(cat version.txt)
+          else
+            VERSION="0.0.1"
+          fi
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+          # Create a professional tag
+          TAG_NAME="picoctf-cli-v$VERSION"
+
+          # Create a descriptive release name
+          RELEASE_NAME="Release-v$VERSION"
+
+          echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
+          echo "RELEASE_NAME=$RELEASE_NAME" >> $GITHUB_ENV
+
+      # 4. Generate an ephemeral GPG key for signing
       - name: Generate Ephemeral GPG Key
         run: |
           cat > gpg-key.conf <<EOF
@@ -37,11 +58,12 @@ jobs:
           Name-Email: ci@example.com
           Expire-Date: 0
           %commit
+          EOF
           gpg --batch --generate-key gpg-key.conf
           rm gpg-key.conf
           gpg --list-keys --with-colons
 
-      # 4. Retrieve the ephemeral key ID
+      # 5. Retrieve the ephemeral key ID
       - name: Get Ephemeral Key ID
         id: keyid
         run: |
@@ -49,7 +71,7 @@ jobs:
           echo "Key ID: $KEY_ID"
           echo "::set-output name=KEY_ID::$KEY_ID"
 
-      # 5. Build binary from shell script using shc (using the -r flag for relocatable binary)
+      # 6. Build binary from shell script using shc
       - name: Build Binary from Shell Script
         run: |
           chmod +x picoctf.sh
@@ -57,57 +79,47 @@ jobs:
           mv picoctf.sh.x picoctf
           ls -l picoctf
 
-      # 6. Create .deb package structure
+      # 7. Create .deb package structure
       - name: Create .deb Package Structure
         run: |
           mkdir -p package/DEBIAN
           mkdir -p package/usr/local/bin
           cp picoctf package/usr/local/bin/
           chmod +x package/usr/local/bin/picoctf
-          echo "Package: picoctf" > package/DEBIAN/control
-          echo "Version: 1.0" >> package/DEBIAN/control
-          echo "Section: utils" >> package/DEBIAN/control
-          echo "Priority: optional" >> package/DEBIAN/control
-          echo "Architecture: all" >> package/DEBIAN/control
-          echo "Depends: bash" >> package/DEBIAN/control
-          echo "Maintainer: Mahros <mahros.elqabasy@gmail.com>" >> package/DEBIAN/control
-          echo "Origin: picoctf" >> package/DEBIAN/control
-          echo "Description: A versatile command-line tool for handling picoCTF flags." >> package/DEBIAN/control
-          echo " This package provides functionality to wrap input into the picoCTF flag format," >> package/DEBIAN/control
-          echo " extract the first picoCTF flag from given text or files, and format input to ensure" >> package/DEBIAN/control
-          echo " proper capitalization and spacing for picoCTF challenges." >> package/DEBIAN/control
+          cat > package/DEBIAN/control <<EOF
+          Package: picoctf
+          Version: ${VERSION}
+          Section: utils
+          Priority: optional
+          Architecture: all
+          Depends: bash
+          Maintainer: Mahros <mahros.elqabasy@gmail.com>
+          Origin: picoctf
+          Description: A versatile command-line tool for handling picoCTF flags.
+           This package provides functionality to wrap input into the picoCTF flag format,
+           extract the first picoCTF flag from given text or files, and format input to ensure
+           proper capitalization and spacing for picoCTF challenges.
+          EOF
           cat package/DEBIAN/control
 
-      # 7. Build the .deb package
+      # 8. Build the .deb package
       - name: Build .deb Package
         run: |
           dpkg-deb --build --root-owner-group package picoctf.deb
           ls -l picoctf.deb
 
-      # 8. Sign the .deb package using debsigs with the ephemeral key
-      # - name: Sign .deb Package with GPG
-      #   run: |
-      #     KEY_ID="${{ steps.keyid.outputs.KEY_ID }}"
-      #     echo "Signing using key: $KEY_ID"
-      #     debsigs --sign=origin -k "$KEY_ID" picoctf.deb
-
-      # 9. Validate the package using lintian
-      # - name: Validate Package with Lintian
-      #   run: |
-      #     lintian picoctf.deb || true
-
-      # 10. Test package installation in a Debian container
+      # 9. Test package installation in a Debian container
       - name: Test Package Installation in Docker Container
         run: |
           docker run --rm -v "$(pwd):/packages" debian:latest bash -c "apt-get update && dpkg -i /packages/picoctf.deb && picoctf --help"
 
-      # 11. Create a GitHub Release and attach the .deb package
+      # 10. Create a GitHub Release with Dynamic Tag and Name
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: "release-${{ github.sha }}"
-          name: "Release ${{ github.sha }}"
-          body: "Automated release of picoCTF package with ephemeral GPG key"
+          tag_name: "${{ env.TAG_NAME }}"
+          name: "${{ env.RELEASE_NAME }}"
+          body: "Automated release of picoCTF package with ephemeral GPG key."
           files: picoctf.deb
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
