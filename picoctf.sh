@@ -93,8 +93,17 @@ picofind() {
 
 # Format input to ensure correct picoCTF capitalization and remove spaces
 picoformat() {
-    local output
-    formatted=$(echo "$1" | tr -d '[:space:]')
+    local input output
+
+    # Read from stdin if no arguments are provided
+    if [[ -p /dev/stdin ]]; then
+        input=$(cat -)
+    else
+        input="$1"
+    fi
+
+    # Remove spaces and format input
+    formatted=$(echo "$input" | tr -d '[:space:]')
     if [[ "$formatted" =~ ^[pP][iI][cC][oO][cC][tT][fF] ]]; then
         output="picoCTF${formatted:7}"
     else
@@ -102,9 +111,11 @@ picoformat() {
     fi
 
     echo "$output"
+
     # Copy to clipboard if --copy is enabled
     [[ "$COPY" == "true" ]] && copy_to_clipboard "$output"
 }
+
 
 # Main functionality dispatcher
 COPY="false"
