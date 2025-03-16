@@ -9,7 +9,7 @@ Created by **Mahros Alqabay**
 ### Clone the Repository and Install the Tool Globally
 
 ~~~bash
-git clone https://github.com/mahros-alqabay/picoctf-tool.git
+git clone https://github.com/mahros-alqabay/picoctf.git
 cd picoctf-tool
 chmod +x picoctf
 sudo mv picoctf /usr/local/bin/
