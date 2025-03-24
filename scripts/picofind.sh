@@ -4,7 +4,7 @@
 
 # Ensure picoformat is available
 SCRIPT_DIR="$(dirname "$0")"
-FORMAT_SCRIPT="$SCRIPT_DIR/picoformat.sh"
+FORMAT_SCRIPT="$SCRIPT_DIR/picoformat"
 
 if [ -p /dev/stdin ]; then
     raw_flag=$(grep -a -o -i -m 1 -P 'p\s*i\s*c\s*o\s*C\s*T\s*F\s*\{[^}]*\}')
