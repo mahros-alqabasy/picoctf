@@ -1,0 +1,29 @@
+.TH picoflag 1 "2025-03-24" "picoCTF Utils" "User Commands"
+.SH NAME
+picoflag - Wrap input in the picoCTF flag format.
+.SH SYNOPSIS
+.B picoflag
+[\fIOPTIONS\fR] [\fIINPUT\fR]
+.SH DESCRIPTION
+Wrap input in the picoCTF flag format.
+.SH OPTIONS
+.TP
+.B --copy
+Copy the output to clipboard.
+.SH EXAMPLES
+.TP
+.B Extract and format a flag
+picoflag "p  i C O C T F {fl4g_here}"
+.TP
+.B Extract from a file
+picoflag file.txt
+.SH EXIT STATUS
+.TP
+.B 0
+Success.
+.TP
+.B 1
+Error occurred.
+.SH SEE ALSO
+.BR picoformat (1),
+.BR picoflag (1)

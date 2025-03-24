@@ -1,0 +1,29 @@
+.TH picofind 1 "2025-03-24" "picoCTF Utils" "User Commands"
+.SH NAME
+picofind - Extract the first picoCTF flag from input and format it correctly.
+.SH SYNOPSIS
+.B picofind
+[\fIOPTIONS\fR] [\fIINPUT\fR]
+.SH DESCRIPTION
+Extract the first picoCTF flag from input and format it correctly.
+.SH OPTIONS
+.TP
+.B --copy
+Copy the output to clipboard.
+.SH EXAMPLES
+.TP
+.B Extract and format a flag
+picofind "p  i C O C T F {fl4g_here}"
+.TP
+.B Extract from a file
+picofind file.txt
+.SH EXIT STATUS
+.TP
+.B 0
+Success.
+.TP
+.B 1
+Error occurred.
+.SH SEE ALSO
+.BR picoformat (1),
+.BR picoflag (1)

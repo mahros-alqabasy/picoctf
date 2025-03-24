@@ -1,0 +1,29 @@
+.TH copy 1 "2025-03-24" "picoCTF Utils" "User Commands"
+.SH NAME
+copy - Copy text to clipboard using xsel.
+.SH SYNOPSIS
+.B copy
+[\fIOPTIONS\fR] [\fIINPUT\fR]
+.SH DESCRIPTION
+Copy text to clipboard using xsel.
+.SH OPTIONS
+.TP
+.B --copy
+Copy the output to clipboard.
+.SH EXAMPLES
+.TP
+.B Extract and format a flag
+copy "p  i C O C T F {fl4g_here}"
+.TP
+.B Extract from a file
+copy file.txt
+.SH EXIT STATUS
+.TP
+.B 0
+Success.
+.TP
+.B 1
+Error occurred.
+.SH SEE ALSO
+.BR picoformat (1),
+.BR picoflag (1)

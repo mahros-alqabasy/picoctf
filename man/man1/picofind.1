@@ -1,0 +1,37 @@
+.TH PICOFIND 1 "March 2025" "picoCTF Tools" "User Commands"
+.SH NAME
+picofind \- Extract the first picoCTF flag from input
+
+.SH SYNOPSIS
+.B picofind
+[\fIFILE\fR | \fISTRING\fR] [\fB--copy\fR]
+
+.SH DESCRIPTION
+.B picofind
+searches for the first occurrence of a picoCTF flag pattern in the given input, 
+formats it correctly using \fBpicoformat\fR, and prints the result.
+
+.SH OPTIONS
+.TP
+\fB--copy\fR
+Copy the extracted flag to the clipboard using \fBxsel\fR.
+
+.SH EXAMPLES
+Extract from a string:
+.nf
+$ picofind "p i c o C T F {fl4g_h3r3}"
+.fi
+
+Extract from a file:
+.nf
+$ picofind challenge_output.txt
+.fi
+
+.SH SEE ALSO
+picoformat(1), picoflag(1), copy(1)
+
+.SH AUTHOR
+Written by Your Name.
+
+.SH BUGS
+Report issues at https://github.com/yourrepo/issues

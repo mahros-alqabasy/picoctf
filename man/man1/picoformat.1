@@ -1,0 +1,31 @@
+.TH PICOFORMAT 1 "March 2025" "picoCTF Tools" "User Commands"
+.SH NAME
+picoformat \- Format a picoCTF flag correctly
+
+.SH SYNOPSIS
+.B picoformat
+[\fISTRING\fR] [\fB--copy\fR]
+
+.SH DESCRIPTION
+.B picoformat
+ensures proper capitalization and removes spaces from a picoCTF flag.
+
+.SH OPTIONS
+.TP
+\fB--copy\fR
+Copy the formatted flag to the clipboard using \fBxsel\fR.
+
+.SH EXAMPLES
+Format a malformed flag:
+.nf
+$ picoformat "p i C O C t F {example_flag}"
+.fi
+
+.SH SEE ALSO
+picofind(1), picoflag(1), copy(1)
+
+.SH AUTHOR
+Written by Your Name.
+
+.SH BUGS
+Report issues at https://github.com/yourrepo/issues

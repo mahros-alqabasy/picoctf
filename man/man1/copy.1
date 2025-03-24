@@ -1,0 +1,27 @@
+.TH COPY 1 "March 2025" "picoCTF Tools" "User Commands"
+.SH NAME
+copy \- Copy input text to the clipboard
+
+.SH SYNOPSIS
+.B copy
+[\fISTRING\fR]
+
+.SH DESCRIPTION
+.B copy
+copies input text to the system clipboard using \fBxsel\fR.
+
+.SH EXAMPLES
+Copy a flag to the clipboard:
+.nf
+$ echo "picoCTF{example_flag}" | copy
+(Copied to clipboard)
+.fi
+
+.SH SEE ALSO
+picofind(1), picoformat(1), picoflag(1)
+
+.SH AUTHOR
+Written by Your Name.
+
+.SH BUGS
+Report issues at https://github.com/yourrepo/issues
