@@ -20,6 +20,9 @@ jobs:
       - name: Install dependencies
         run: sudo apt update && sudo apt install -y dpkg-dev debhelper fakeroot
 
+      - name: Install shc dependency
+        run: sudo sudo apt update && add-apt-repository ppa:neurobin/ppa && sudo apt-get update && sudo apt-get install shc
+
       - name: Prepare Package Structure
         run: |
           mkdir -p pkg/DEBIAN
@@ -31,7 +34,7 @@ jobs:
           Package: picoctf
           Version: 1.0.0
           Architecture: all
-          Maintainer: Your Name <your.email@example.com>
+          Maintainer: Mahros AL-Qabasy <mahros.elqabasy@gmail.com>
           Description: A sample picoCTF package with multiple scripts
           Depends: libc6 (>= 2.27)
           Section: misc
