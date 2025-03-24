@@ -3,8 +3,7 @@ name: Build and Release .deb Package
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -39,9 +38,14 @@ jobs:
           Priority: optional
           EOF
 
-          # Copy scripts to /usr/bin/ (KEEP .sh extensions)
+          # Copy scripts to /usr/bin/
           cp scripts/*.sh pkg/usr/bin/
-          chmod +x pkg/usr/bin/*.sh  # Make them executable
+          
+          # Remove .sh extensions and make them executable
+          for file in pkg/usr/bin/*.sh; do 
+            mv "$file" "${file%.sh}"
+            chmod +x "${file%.sh}"
+          done
 
           # Copy man pages
           cp docs/MANUAL/*.1 pkg/usr/share/man/man1/
@@ -49,15 +53,14 @@ jobs:
           # Compress man pages
           gzip -f pkg/usr/share/man/man1/*.1
 
-      - name: Build .deb package
-        run: |
-          dpkg-deb --build pkg build/pkg/picoctf.deb
+      - name: Build .deb Package
+        run: dpkg-deb --build pkg picoctf.deb
 
       - name: Upload Debian package artifact
         uses: actions/upload-artifact@v4
         with:
           name: picoctf-deb
-          path: build/pkg/picoctf.deb
+          path: picoctf.deb
 
   release:
     name: Create GitHub Release
@@ -73,14 +76,13 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: picoctf-deb
-          path: build/pkg
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
+          files: picoctf.deb
           tag_name: v1.0.0
-          name: "Release v1.0.0"
+          release_name: "Release v1.0.0"
           body: "🚀 New Debian package release: **v1.0.0**"
           draft: false
           prerelease: false
-          files: build/pkg/picoctf.deb
