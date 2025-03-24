@@ -1,6 +1,3 @@
-Sure! Below is a `README.md` template that explains how to download the latest release from a repository (such as a repository on GitHub for picoCTF), and install it on a Linux system.
-
-
 # picoCTF Latest Release Installation Guide
 
 This guide will walk you through the steps to download and install the latest release of picoCTF from the repository on your Linux system.
