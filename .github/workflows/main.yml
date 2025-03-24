@@ -49,7 +49,7 @@ jobs:
 
           # generate the bin files
           for script in scripts/*.sh; do
-            shc -f "$script" -o "scripts/bin/${script%.sh}" -r
+            shc -f "$script" -o "bin/${script%.sh}" -r
           done
 
           # then copy them from scripts/bin to pkg/usr/bin
