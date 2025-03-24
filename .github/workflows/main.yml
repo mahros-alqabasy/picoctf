@@ -1,0 +1,80 @@
+name: Build & Release `.deb` Package
+
+on:
+  push:
+    tags:
+      - 'v*'  # Runs only when pushing a tag like `v1.0.0`
+
+jobs:
+  build-deb:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - name: Install Dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y dpkg-dev gzip
+
+      - name: Generate Documentation & Man Pages
+        run: |
+          chmod +x generate_docs.sh
+          ./generate_docs.sh
+          mkdir -p pkg/usr/share/doc/picoctf-utils
+          cp docs/*.md pkg/usr/share/doc/picoctf-utils/
+          cp docs/MANUAL/*.1 pkg/usr/share/man/man1/
+          gzip -f pkg/usr/share/man/man1/*.1
+
+      - name: Prepare `pkg/` Directory
+        run: |
+          mkdir -p pkg/DEBIAN
+          mkdir -p pkg/usr/bin
+          mkdir -p pkg/usr/share/doc/picoctf-utils
+          mkdir -p pkg/usr/share/man/man1
+
+          # Copy scripts
+          cp scripts/picofind.sh pkg/usr/bin/picofind
+          cp scripts/picoformat.sh pkg/usr/bin/picoformat
+          cp scripts/picoflag.sh pkg/usr/bin/picoflag
+          cp scripts/copy.sh pkg/usr/bin/copy
+          chmod +x pkg/usr/bin/*
+
+          # Copy documentation
+          cp docs/*.md pkg/usr/share/doc/picoctf-utils/
+          cp docs/MANUAL/*.1 pkg/usr/share/man/man1/
+          gzip -f pkg/usr/share/man/man1/*.1
+
+          # Copy DEBIAN control files
+          cp packaging/control pkg/DEBIAN/control
+          cp packaging/postinst pkg/DEBIAN/postinst
+          cp packaging/prerm pkg/DEBIAN/prerm
+          chmod 755 pkg/DEBIAN/postinst pkg/DEBIAN/prerm
+
+      - name: Build `.deb` Package
+        run: |
+          dpkg-deb --build --root-owner-group pkg
+          mv pkg.deb picoctf-utils.deb
+
+      - name: Upload `.deb` as Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: picoctf-utils.deb
+          path: picoctf-utils.deb
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: "Release ${{ github.ref_name }}"
+          body: |
+            **Changelog:**
+            - New version released
+            - Improved documentation and man pages
+          draft: false
+          prerelease: false
+          files: picoctf-utils.deb
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
