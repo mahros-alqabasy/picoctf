@@ -2,7 +2,7 @@ name: Build and Release .deb Package
 
 on:
   push:
-    branches: [ main ]  # Trigger workflow on main branch push
+    branches: [ main ]
 
 permissions:
   contents: write
@@ -19,6 +19,20 @@ jobs:
       - name: Install dependencies
         run: sudo apt update && sudo apt install -y dpkg-dev debhelper fakeroot
 
+      - name: Prepare Debian package structure
+        run: |
+          mkdir -p pkg/DEBIAN
+          cat <<EOF > pkg/DEBIAN/control
+          Package: picoctf
+          Version: 1.0.0
+          Section: base
+          Priority: optional
+          Architecture: all
+          Depends: bash
+          Maintainer: Your Name <your.email@example.com>
+          Description: A sample picoCTF package
+          EOF
+
       - name: Build .deb package
         run: |
           mkdir -p build/pkg
@@ -30,39 +44,22 @@ jobs:
           name: picoctf-deb
           path: build/pkg/picoctf.deb
 
-  create-tag:
-    name: Create Git Tag
-    needs: build-deb
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Get Latest Tag
-        id: get_tag
-        run: |
-          latest_tag=$(git describe --tags --abbrev=0 || echo "v0.0.0")
-          latest_version=$(echo $latest_tag | cut -d'.' -f2)
-          new_version=$((latest_version + 1))
-          new_tag="v1.$new_version.0"
-          echo "NEW_TAG=$new_tag" >> $GITHUB_ENV
-
-      - name: Create and Push Tag
-        run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "github-actions@github.com"
-          git tag $NEW_TAG
-          git push origin $NEW_TAG
-
   release:
     name: Create GitHub Release
-    needs: create-tag
+    needs: build-deb
     runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/heads/main')
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+
+      - name: Generate a tag for the new release
+        run: |
+          TAG_NAME="v$(date +'%Y.%m.%d-%H%M%S')"
+          echo "TAG_NAME=${TAG_NAME}" >> $GITHUB_ENV
+          git tag $TAG_NAME
+          git push origin $TAG_NAME
 
       - name: Download Debian package artifact
         uses: actions/download-artifact@v4
@@ -73,9 +70,8 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ env.NEW_TAG }}
-          name: "Release ${{ env.NEW_TAG }}"
-          body: "🚀 New Debian package release: **${{ env.NEW_TAG }}**"
+          tag_name: ${{ env.TAG_NAME }}
+          files: build/pkg/picoctf.deb
+          body: "🚀 New Debian package release: **${{ env.TAG_NAME }}**"
           draft: false
           prerelease: false
-          files: build/pkg/picoctf.deb
