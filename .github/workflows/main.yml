@@ -40,9 +40,9 @@ jobs:
 
           # Copy scripts to /usr/bin/
           cp scripts/*.sh pkg/usr/bin/
-          
+
           # Remove .sh extensions and make them executable
-          for file in pkg/usr/bin/*.sh; do 
+          for file in pkg/usr/bin/*.sh; do
             mv "$file" "${file%.sh}"
             chmod +x "${file%.sh}"
           done
