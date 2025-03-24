@@ -19,6 +19,18 @@ jobs:
       - name: Install dependencies
         run: sudo apt update && sudo apt install -y dpkg-dev debhelper fakeroot
 
+      - name: Ensure DEBIAN folder exists
+        run: |
+          mkdir -p pkg/DEBIAN
+          echo "Package: picoctf
+          Version: 1.0.0
+          Section: utils
+          Priority: optional
+          Architecture: all
+          Depends: bash
+          Maintainer: Your Name <your.email@example.com>
+          Description: A tool for handling picoCTF flags." > pkg/DEBIAN/control
+
       - name: Build .deb package
         run: |
           mkdir -p build/pkg
