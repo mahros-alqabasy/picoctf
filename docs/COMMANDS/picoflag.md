@@ -1,38 +1,46 @@
-# picoflag - Wrap input in the picoCTF flag format.
 
-## 🔹 Description
-`picoflag` - Wrap input in the picoCTF flag format.
+### File: **picoflag.md**
 
-## 🔹 Usage
-```sh
+picoflag - Wrap input in the picoCTF{} format.
+
+🔹 Description  
+picoflag wraps the provided input by adding "picoCTF{" at the beginning and "}" at the end, ensuring the input follows the proper flag format.  
+It processes input from arguments, files, or standard input.
+
+🔹 Usage  
+```
 picoflag [OPTIONS] [INPUT]
 ```
 
-### **✅ Example 1: Basic Usage**
-```sh
-$ picoflag "some_input"
-Output of picoflag
+✅ Example 1: Basic Usage  
+```
+$ picoflag "my_secret_flag"
+picoCTF{my_secret_flag}
 ```
 
-### **✅ Example 2: Using from File**
-```sh
-$ picoflag input.txt
+✅ Example 2: Using from File  
+```
+$ picoflag secret.txt
 ```
 
-## 🔹 Options
-| Option  | Description |
-|---------|------------|
-| `--copy` | Copy the output to clipboard |
+✅ Example 3: From Standard Input  
+```
+$ echo "flag_content" | picoflag
+```
 
-## 🔹 Exit Codes
-| Code | Meaning |
-|------|---------|
-| `0`  | Success |
-| `1`  | Error occurred |
+🔹 Options  
+| Option    | Description                                       |
+|-----------|---------------------------------------------------|
+| --copy    | Copy the generated flag to the clipboard using xsel |
 
-## 🔹 See Also
-- [README.md](../README.md) - General project information  
-- [INSTALL.md](../INSTALL.md) - Installation guide  
+🔹 Exit Codes  
+| Code | Meaning         |
+|------|-----------------|
+| 0    | Success         |
+| 1    | Error occurred  |
 
----
-📌 **More details at:** [GitHub Repo](https://github.com/yourrepo)
+🔹 See Also  
+- README.md - General project information  
+- INSTALL.md - Installation guide
+
+📌 More details at: [GitHub Repo](https://www.github.com/mahros-alqabasy/picoctf)

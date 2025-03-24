@@ -1,0 +1,39 @@
+.TH PICOCTF 1 "March 2025" "picoCTF Tools" "User Commands"
+.SH NAME
+picoctf \- Main dispatcher for picoCTF utility
+.SH SYNOPSIS
+.B picoctf
+[\fIcommand\fR] [\fIoptions\fR] [\fIinput\fR]
+.SH DESCRIPTION
+.B picoctf
+is the central controller for the picoCTF suite. It dispatches commands to various sub-tools, including:
+.IP 4
+picofind \- Extract and format the first picoCTF flag from input.
+.IP 4
+picoformat \- Format input by removing spaces and correcting capitalization.
+.IP 4
+picoflag \- Wrap input in the picoCTF flag format.
+.IP 4
+copy \- Copy text (or file contents) to the clipboard using xsel.
+.PP
+If no command is provided or \fB--help\fR is specified, picoctf displays this help message listing available commands.
+.SH OPTIONS
+.TP
+\fB--help\fR
+Display the help message.
+.SH EXAMPLES
+Basic usage:
+.nf
+$ picoctf picofind "p i c o C T F {example_flag}"
+.fi
+Dispatch a sub-command with options:
+.nf
+$ picoctf copy "some text" ./file.txt
+.fi
+.SH SEE ALSO
+picofind(1), picoformat(1), picoflag(1), copy(1)
+.SH AUTHOR
+Written by Mahros AL-Qabasy.
+Email: mahros.elqabasy@gmail.com
+.SH BUGS
+Report issues at: https://www.github.com/mahros-alqabasy/picoctf/issues

@@ -38,7 +38,7 @@ sudo apt-get install tar
 First, you need to clone the picoCTF repository. This can be done with the following command:
 
 ```bash
-git clone https://github.com/picoCTF/picoCTF.git
+git clone https://github.com/mahros-alqabasy/picoctf.git
 ```
 
 Alternatively, if the repository is hosted on a different platform (e.g., GitLab, Bitbucket), use the respective URL for that repository.
@@ -50,7 +50,7 @@ git clone <repository-url>
 Change into the directory of the cloned repo:
 
 ```bash
-cd picoCTF
+cd picoctf
 ```
 
 ## Step 2: Check for the Latest Release
@@ -59,11 +59,11 @@ cd picoCTF
 
 If the releases are tagged in GitHub (or other Git hosting services), you can find the latest release through the "Releases" page:
 
-1. Go to the [Releases Page](https://github.com/picoCTF/picoCTF/releases) of the picoCTF repository.
+1. Go to the [Releases Page](https://github.com/mahros-alqabasy/picoctf/releases) of the picoCTF repository.
 2. Download the latest release. You can either download it manually through the web interface, or use the following command to get the latest release using `wget`:
 
 ```bash
-wget https://github.com/picoCTF/picoCTF/releases/download/v<version>/picoCTF-v<version>.tar.gz
+wget https://github.com/mahros-alqabast/picoctf/releases/download/v<version>/picoCTF-v<version>.tar.gz
 ```
 
 Replace `<version>` with the version number of the latest release. You can find the version number on the GitHub Releases page.
@@ -121,7 +121,7 @@ If you run into any issues during installation or while running picoCTF, conside
    
 2. **Permissions:** Ensure that you have the correct permissions to run the installation or scripts. You might need to use `sudo` for some commands.
 
-3. **Contact Support:** If you can't resolve the issue, check the [GitHub Issues page](https://github.com/picoCTF/picoCTF/issues) for similar problems or to ask for help.
+3. **Contact Support:** If you can't resolve the issue, check the [GitHub Issues page](https://github.com/mahros-alqabasy/picoCTF/issues) for similar problems or to ask for help.
 
 ## Conclusion
 
@@ -140,5 +140,3 @@ For more information and advanced installation options, refer to the official do
 4. **Step 3: Install the Release**: Instructions for extracting and installing the release.
 5. **Step 4: Running picoCTF**: How to run the picoCTF instance after installation.
 6. **Troubleshooting**: Provides guidance for resolving common issues.
-
-This guide should be enough to explain how users can download the latest release from a GitHub repository and install it on their Linux machine.

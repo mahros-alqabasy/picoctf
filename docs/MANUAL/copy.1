@@ -1,29 +1,49 @@
-.TH copy 1 "2025-03-24" "picoCTF Utils" "User Commands"
+.TH COPY 1 "March 2025" "picoCTF Tools" "User Commands"
+
 .SH NAME
-copy - Copy text to clipboard using xsel.
+copy \- Copy multiple files and text strings to the clipboard
+
 .SH SYNOPSIS
 .B copy
-[\fIOPTIONS\fR] [\fIINPUT\fR]
+[\fISTRING\fR | \fIFILE\fR]...
+
 .SH DESCRIPTION
-Copy text to clipboard using xsel.
+.B copy
+is a versatile clipboard utility that allows you to copy multiple pieces of content—whether they are direct text strings or file contents—to the Linux clipboard. The tool processes each command-line argument as follows:
+
+.IP "1. File input:"
+If an argument is a file (i.e. it exists as a regular file), its content is read and appended to the final output.
+.IP "2. Text input:"
+If an argument does not correspond to a file, it is treated as a literal text string.
+.IP "3. Piped or redirected input:"
+Any data received via standard input (piped or redirected) is appended to the final output.
+.PP
+The concatenated output is then copied to the clipboard using the \fBxsel\fR utility. Prior to processing, \fBcopy\fR verifies that \fBxsel\fR is installed. If \fBxsel\fR is missing or if the combined output is empty, an appropriate error or warning message is displayed.
+
 .SH OPTIONS
-.TP
-.B --copy
-Copy the output to clipboard.
+Currently, \fBcopy\fR does not support any additional flags or options. All arguments provided are processed sequentially as described above.
+
 .SH EXAMPLES
-.TP
-.B Extract and format a flag
-copy "p  i C O C T F {fl4g_here}"
-.TP
-.B Extract from a file
-copy file.txt
-.SH EXIT STATUS
-.TP
-.B 0
-Success.
-.TP
-.B 1
-Error occurred.
+Copy a mix of text and file contents:
+.nf
+$ copy "Hello World" ./file1.txt "Additional text" ./file2.txt
+.fi
+The above command will concatenate the literal strings "Hello World" and "Additional text" with the contents of \fIfile1.txt\fR and \fIfile2.txt\fR, then copy the result to the clipboard.
+
+.PP
+Copy from arguments and piped input:
+.nf
+$ copy "Start Text" ./file.txt <<< "Piped text appended"
+.fi
+In this example, \fBcopy\fR reads both the command-line arguments and the piped input, concatenating them before copying to the clipboard.
+
 .SH SEE ALSO
-.BR picoformat (1),
-.BR picoflag (1)
+xsel(1), cat(1), picoformat(1), picofind(1)
+
+.SH AUTHOR
+Written by Mahros AL-Qabasy.
+Email: mahros.elqabasy@gmail.com
+
+.SH BUGS
+Report Issues at: 
+https://github.com/mahros-qalqabasy/picoctf/issues

@@ -4,16 +4,11 @@ picoformat \- Format a picoCTF flag correctly
 
 .SH SYNOPSIS
 .B picoformat
-[\fISTRING\fR] [\fB--copy\fR]
+[\fISTRING\fR]
 
 .SH DESCRIPTION
 .B picoformat
-ensures proper capitalization and removes spaces from a picoCTF flag.
-
-.SH OPTIONS
-.TP
-\fB--copy\fR
-Copy the formatted flag to the clipboard using \fBxsel\fR.
+ensures proper capitalization and removes spaces from a picoCTF flag. It accepts input either as a direct argument or from standard input. The tool processes the flag by removing all whitespace and, if the flag starts with "picoctf" (in any case), it normalizes the prefix to "picoCTF" and appends the rest of the flag.
 
 .SH EXAMPLES
 Format a malformed flag:
@@ -22,10 +17,11 @@ $ picoformat "p i C O C t F {example_flag}"
 .fi
 
 .SH SEE ALSO
-picofind(1), picoflag(1), copy(1)
+picofind(1), picoflag(1), xsel(1)
 
 .SH AUTHOR
-Written by Your Name.
+Written by Mahros AL-Qabasy.
+Email: mahros.elqabasy@gmail.com
 
 .SH BUGS
-Report issues at https://github.com/yourrepo/issues
+Report issues at https://github.com/mahros-alqabasy/issues

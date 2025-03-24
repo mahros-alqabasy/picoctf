@@ -1,29 +1,36 @@
-.TH picoflag 1 "2025-03-24" "picoCTF Utils" "User Commands"
+.TH PICOFLAG 1 "March 2025" "picoCTF Tools" "User Commands"
+
 .SH NAME
-picoflag - Wrap input in the picoCTF flag format.
+picoflag \- Wrap input in the picoCTF{} format
+
 .SH SYNOPSIS
 .B picoflag
-[\fIOPTIONS\fR] [\fIINPUT\fR]
+[\fISTRING\fR]
+
 .SH DESCRIPTION
-Wrap input in the picoCTF flag format.
-.SH OPTIONS
-.TP
-.B --copy
-Copy the output to clipboard.
+.B picoflag
+wraps input inside a picoCTF flag by adding "picoCTF{" at the beginning and "}" at the end.  
+If the input is provided via a file or standard input, each line is processed separately.
+
 .SH EXAMPLES
-.TP
-.B Extract and format a flag
-picoflag "p  i C O C T F {fl4g_here}"
-.TP
-.B Extract from a file
-picoflag file.txt
-.SH EXIT STATUS
-.TP
-.B 0
-Success.
-.TP
-.B 1
-Error occurred.
+Wrap a flag provided as a direct argument:
+.nf
+$ picoflag "my_secret_flag"
+picoCTF{my_secret_flag}
+.fi
+
+Wrap a flag provided via standard input:
+.nf
+$ echo "flag_content" | picoflag
+picoCTF{flag_content}
+.fi
+
 .SH SEE ALSO
-.BR picoformat (1),
-.BR picoflag (1)
+picoformat(1), picofind(1), xsel(1)
+
+.SH AUTHOR
+Written by Mahros AL-Qabasy.
+Email: mahros.elqabasy@gmail.com
+
+.SH BUGS
+Report issues at https://github.com/mahros-qlabasy/picoctf/issues

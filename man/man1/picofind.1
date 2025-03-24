@@ -1,37 +1,53 @@
 .TH PICOFIND 1 "March 2025" "picoCTF Tools" "User Commands"
+
 .SH NAME
-picofind \- Extract the first picoCTF flag from input
+picofind \- Extract the first picoCTF flag from input and format it
 
 .SH SYNOPSIS
 .B picofind
-[\fIFILE\fR | \fISTRING\fR] [\fB--copy\fR]
+[\fIFILE\fR | \fISTRING\fR]
 
 .SH DESCRIPTION
 .B picofind
-searches for the first occurrence of a picoCTF flag pattern in the given input, 
-formats it correctly using \fBpicoformat\fR, and prints the result.
+searches for the first occurrence of a picoCTF flag pattern in the given input (either a string, file, or stdin),
+formats it correctly using the \fBpicoformat\fR script, and prints the result. If the \fB--copy\fR option is specified,
+it will copy the formatted flag to the clipboard using \fBxsel\fR.
 
-.SH OPTIONS
-.TP
-\fB--copy\fR
-Copy the extracted flag to the clipboard using \fBxsel\fR.
+The regular expression used to identify the picoCTF flag follows the pattern:
+.nf
+picoCTF{HERE_IS_YOU_FLAG_CONTENT}
+.fi
+
+
+
+The tool ensures that the \fBpicoformat\fR script is available on the system before attempting to format the flag.
+
 
 .SH EXAMPLES
 Extract from a string:
 .nf
 $ picofind "p i c o C T F {fl4g_h3r3}"
+picoCTF{fl4g_h3r3}
 .fi
 
 Extract from a file:
 .nf
 $ picofind challenge_output.txt
+picoCTF{FLAG_HERE}
+.fi
+
+Extract from stdin:
+.nf
+$ echo "p i c o C T F {f1ag_123}" | picofind
+picoCTF{RETURNED_FROM_PICOFIND}
 .fi
 
 .SH SEE ALSO
-picoformat(1), picoflag(1), copy(1)
+picoformat(1), picoflag(1), xsel(1)
 
 .SH AUTHOR
-Written by Your Name.
+Written by Mahros AL-Qabasy.
+Email: mahros.elqabasy@gmail.com
 
 .SH BUGS
-Report issues at https://github.com/yourrepo/issues
+Report issues at https://github.com/mahros-alqabasy/picoctf/issues
