@@ -100,6 +100,6 @@ jobs:
           files: picoctf.deb
           tag_name: v1.0.0
           release_name: "Release v1.0.0"
-          body: "🚀 New Debian package release: **v$(date +'%Y.%m.%d-%H%M%S')**"
+          body: "🚀 New Debian package release: **v1.0.0**"
           draft: false
           prerelease: false
