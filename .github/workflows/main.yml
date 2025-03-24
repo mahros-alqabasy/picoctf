@@ -17,11 +17,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Update system
+        run: sudo apt-get update && sudo apt update && sudo apt upgrade && sudo apt-get upgrade
+
       - name: Install dependencies
-        run: sudo apt update && sudo apt install -y dpkg-dev debhelper fakeroot
+        run: sudo apt install -y dpkg-dev debhelper fakeroot
 
       - name: Install shc dependency
-        run: sudo apt update && add-apt-repository ppa:neurobin/ppa -y && sudo apt-get update -y && sudo apt-get install -y shc
+        run: sudo add-apt-repository ppa:neurobin/ppa && sudo apt-get update && sudo apt-get install -y shc
 
       - name: Prepare Package Structure
         run: |
