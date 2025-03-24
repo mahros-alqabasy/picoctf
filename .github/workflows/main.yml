@@ -2,7 +2,7 @@ name: Build and Release .deb Package
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main ]  # Trigger workflow on main branch push
 
 permissions:
   contents: write
@@ -19,18 +19,6 @@ jobs:
       - name: Install dependencies
         run: sudo apt update && sudo apt install -y dpkg-dev debhelper fakeroot
 
-      - name: Ensure DEBIAN folder exists
-        run: |
-          mkdir -p pkg/DEBIAN
-          echo "Package: picoctf
-          Version: 1.0.0
-          Section: utils
-          Priority: optional
-          Architecture: all
-          Depends: bash
-          Maintainer: Your Name <your.email@example.com>
-          Description: A tool for handling picoCTF flags." > pkg/DEBIAN/control
-
       - name: Build .deb package
         run: |
           mkdir -p build/pkg
@@ -42,12 +30,35 @@ jobs:
           name: picoctf-deb
           path: build/pkg/picoctf.deb
 
-  release:
-    name: Create GitHub Release
+  create-tag:
+    name: Create Git Tag
     needs: build-deb
     runs-on: ubuntu-latest
-    # if: startsWith(github.ref, 'refs/tags/v')
-    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Get Latest Tag
+        id: get_tag
+        run: |
+          latest_tag=$(git describe --tags --abbrev=0 || echo "v0.0.0")
+          latest_version=$(echo $latest_tag | cut -d'.' -f2)
+          new_version=$((latest_version + 1))
+          new_tag="v1.$new_version.0"
+          echo "NEW_TAG=$new_tag" >> $GITHUB_ENV
+
+      - name: Create and Push Tag
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git tag $NEW_TAG
+          git push origin $NEW_TAG
+
+  release:
+    name: Create GitHub Release
+    needs: create-tag
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
@@ -62,9 +73,9 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          files: build/pkg/picoctf.deb
-          tag_name: ${{ github.ref }}
-          release_name: "Release ${{ github.ref_name }}"
-          body: "🚀 New Debian package release: **${{ github.ref_name }}**"
+          tag_name: ${{ env.NEW_TAG }}
+          name: "Release ${{ env.NEW_TAG }}"
+          body: "🚀 New Debian package release: **${{ env.NEW_TAG }}**"
           draft: false
           prerelease: false
+          files: build/pkg/picoctf.deb
