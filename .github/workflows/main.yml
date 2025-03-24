@@ -24,7 +24,7 @@ jobs:
         run: sudo apt install -y dpkg-dev debhelper fakeroot
 
       - name: Install shc dependency
-        run: sudo add-apt-repository ppa:neurobin/ppa && sudo apt-get update && sudo apt-get install -y shc
+        run: sudo apt-get install -y shc
 
       - name: Prepare Package Structure
         run: |
