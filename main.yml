@@ -3,7 +3,6 @@ name: Build and Release .deb Package
 on:
   push:
     branches: [ main ]
-  workflow_dispatch:
 
 permissions:
   contents: write
@@ -20,69 +19,59 @@ jobs:
       - name: Install dependencies
         run: sudo apt update && sudo apt install -y dpkg-dev debhelper fakeroot
 
-      - name: Prepare Package Structure
+      - name: Prepare Debian package structure
         run: |
           mkdir -p pkg/DEBIAN
-          mkdir -p pkg/usr/bin
-          mkdir -p pkg/usr/share/man/man1
-
-          # Create DEBIAN/control file
           cat <<EOF > pkg/DEBIAN/control
           Package: picoctf
           Version: 1.0.0
-          Architecture: all
-          Maintainer: Your Name <your.email@example.com>
-          Description: A sample picoCTF package with multiple scripts
-          Depends: libc6 (>= 2.27)
-          Section: misc
+          Section: base
           Priority: optional
+          Architecture: all
+          Depends: bash
+          Maintainer: Your Name <your.email@example.com>
+          Description: A sample picoCTF package
           EOF
 
-          # Copy scripts to /usr/bin/
-          cp scripts/*.sh pkg/usr/bin/
-          
-          # Remove .sh extensions and make them executable
-          for file in pkg/usr/bin/*.sh; do 
-            mv "$file" "${file%.sh}"
-            chmod +x "${file%.sh}"
-          done
-
-          # Copy man pages
-          cp docs/MANUAL/*.1 pkg/usr/share/man/man1/
-
-          # Compress man pages
-          gzip -f pkg/usr/share/man/man1/*.1
-
-      - name: Build .deb Package
-        run: dpkg-deb --build pkg picoctf.deb
+      - name: Build .deb package
+        run: |
+          mkdir -p build/pkg
+          dpkg-deb --build pkg build/pkg/picoctf.deb
 
       - name: Upload Debian package artifact
         uses: actions/upload-artifact@v4
         with:
           name: picoctf-deb
-          path: picoctf.deb
+          path: build/pkg/picoctf.deb
 
   release:
     name: Create GitHub Release
     needs: build-deb
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    if: startsWith(github.ref, 'refs/heads/main')
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Generate a tag for the new release
+        run: |
+          TAG_NAME="v$(date +'%Y.%m.%d-%H%M%S')"
+          echo "TAG_NAME=${TAG_NAME}" >> $GITHUB_ENV
+          git tag $TAG_NAME
+          git push origin $TAG_NAME
+
       - name: Download Debian package artifact
         uses: actions/download-artifact@v4
         with:
           name: picoctf-deb
+          path: build/pkg
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          files: picoctf.deb
-          tag_name: v1.0.0
-          release_name: "Release v1.0.0"
-          body: "🚀 New Debian package release: **v1.0.0**"
+          tag_name: ${{ env.TAG_NAME }}
+          files: build/pkg/picoctf.deb
+          body: "🚀 New Debian package release: **${{ env.TAG_NAME }}**"
           draft: false
           prerelease: false
