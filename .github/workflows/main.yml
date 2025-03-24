@@ -39,13 +39,23 @@ jobs:
           EOF
 
           # Copy scripts to /usr/bin/
-          cp scripts/*.sh pkg/usr/bin/
+          mkdir -p scripts/bin
+
+          # generate the bin files
+          for script in scripts/*.sh; do
+            shc -f "$script" -o "scripts/bin/${script%.sh}" -r
+          done
+
+          # then copy them from scripts/bin to pkg/usr/bin
+          cp scripts/bin/* pkg/usr/bin/
+
+
 
           # Remove .sh extensions and make them executable
-          for file in pkg/usr/bin/*.sh; do
-            mv "$file" "${file%.sh}"
-            chmod +x "${file%.sh}"
-          done
+          #for file in pkg/usr/bin/*.sh; do
+            #mv "$file" "${file%.sh}"
+            #chmod +x "${file%.sh}"
+          #done
 
           # Copy man pages
           cp docs/MANUAL/*.1 pkg/usr/share/man/man1/
