@@ -3,7 +3,7 @@
 This guide will walk you through the steps to download and install the latest release of picoCTF from the repository on your Linux system.
 
 
-# Happy to see you.
+# TEST CI/CD
 
 ## Prerequisites
 
