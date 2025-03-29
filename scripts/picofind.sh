@@ -12,32 +12,34 @@ if [ ! -x "$FORMAT_SCRIPT" ]; then
     exit 1
 fi
 
-# Function to extract the flag using the given input (stdin, file, or argument)
+# Function to extract the flag from input
 extract_flag() {
-    local input="$1"
-    grep -a -o -i -m 1 -P "$FLAG_REGEX" "$input"
+    grep -a -o -i -m 1 -P "$FLAG_REGEX"
 }
 
-# Check the input type
+# Determine input source
 if [ -p /dev/stdin ]; then
-    # Reading from stdin
-    raw_flag=$(extract_flag "/dev/stdin")
+    # Read from pipe
+    raw_flag=$(extract_flag < /dev/stdin)
 elif [ -f "$1" ]; then
-    # Reading from a file
-    raw_flag=$(extract_flag "$1")
+    # Read from a file
+    raw_flag=$(extract_flag < "$1")
+elif [ -n "$1" ]; then
+    # Read from an argument
+    echo "$1" | extract_flag
 else
-    # Treat the argument as the input
-    raw_flag=$(echo "$1" | extract_flag)
+    echo "Usage: echo 'string' | picofind OR picofind file.txt OR picofind 'text'"
+    exit 1
 fi
 
 # Check if a flag was found
 if [ -z "$raw_flag" ]; then
-    echo "See to be no out of picoCTF"
+    echo "Seems to be no picoCTF flag found"
     exit 1
 fi
 
-# Format the extracted flag using picoformat.sh
-formatted_flag=$("$FORMAT_SCRIPT" "$raw_flag")
+# Format the extracted flag using picoformat
+formatted_flag=$("$FORMAT_SCRIPT" <<< "$raw_flag")
 
 # Output the formatted flag
 echo "$formatted_flag"
